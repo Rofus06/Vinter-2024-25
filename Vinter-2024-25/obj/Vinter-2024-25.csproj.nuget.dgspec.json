@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\filip.scherlund\\Documents\\Vinter-2024-25\\Vinter-2024-25\\Vinter-2024-25.csproj": {}
+    "c:\\Users\\filip.scherlund\\Documents\\Vinter-2024-25\\Vinter-2024-25\\Vinter-2024-25.csproj": {}
   },
   "projects": {
-    "C:\\Users\\filip.scherlund\\Documents\\Vinter-2024-25\\Vinter-2024-25\\Vinter-2024-25.csproj": {
+    "c:\\Users\\filip.scherlund\\Documents\\Vinter-2024-25\\Vinter-2024-25\\Vinter-2024-25.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\filip.scherlund\\Documents\\Vinter-2024-25\\Vinter-2024-25\\Vinter-2024-25.csproj",
+        "projectUniqueName": "c:\\Users\\filip.scherlund\\Documents\\Vinter-2024-25\\Vinter-2024-25\\Vinter-2024-25.csproj",
         "projectName": "Vinter-2024-25",
-        "projectPath": "C:\\Users\\filip.scherlund\\Documents\\Vinter-2024-25\\Vinter-2024-25\\Vinter-2024-25.csproj",
+        "projectPath": "c:\\Users\\filip.scherlund\\Documents\\Vinter-2024-25\\Vinter-2024-25\\Vinter-2024-25.csproj",
         "packagesPath": "C:\\Users\\filip.scherlund\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\filip.scherlund\\Documents\\Vinter-2024-25\\Vinter-2024-25\\obj\\",
+        "outputPath": "c:\\Users\\filip.scherlund\\Documents\\Vinter-2024-25\\Vinter-2024-25\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

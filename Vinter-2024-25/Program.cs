@@ -5,48 +5,105 @@ class Program
 {
     static void Main(string[] args)
     {
-        // Skapa en butik, en spelare och en jury
-        Shop shop = new Shop();
-        Player player = new Player(100); // Spelaren börjar med 100 kr
-        Jury jury = new Jury(new List<string> { "söt", "salt" }); // Juryns preferenser
+        Game game = new Game();
+        game.StartGame();
+    }
+}
 
-        // Visa tillgängliga ingredienser
-        shop.DisplayIngredients();
+// ---------- KLASSER ---------- :)
+class Game
+{
+    private int CurrentLevel { get; set; } = 1;
+    private Player Player { get; set; }
+    private Shop Shop { get; set; }
+    private Jury Jury { get; set; }
+
+    public void StartGame()
+    {
+        Console.WriteLine("Välkommen till matlagningsspelet!");
+        while (CurrentLevel <= 3) // 3 nivåer
+        {
+            InitializeLevel();
+            PlayLevel();
+            CurrentLevel++;
+        }
+        Console.WriteLine("Spelet är slut! Tack för att du spelade!");
+    }
+
+    private void InitializeLevel()
+    {
+        // Sätt budget och jurypreferenser baserat på nivå
+        decimal budget = CurrentLevel switch { 1 => 100, 2 => 150, 3 => 200, _ => 100 };
+        Player = new Player(budget);
+        Shop = new Shop();
+        Jury = new Jury(CurrentLevel);
+
+        Console.WriteLine($"\n=== NIVÅ {CurrentLevel} ===");
+        Console.WriteLine($"Budget: {budget} kr");
+        Console.WriteLine($"Juryns favoritsmaker: {string.Join(", ", Jury.PreferredTastes)}");
+    }
+
+    private void PlayLevel()
+    {
+        Shop.DisplayIngredients();
 
         // Spelaren köper ingredienser
-        Console.WriteLine("Vilken ingrediens vill du köpa? (skriv 'klar' när du är färdig)");
         while (true)
         {
-            string input = Console.ReadLine();
-            if (input.ToLower() == "klar") break;
+            Console.Write("Vilken ingrediens vill du köpa? (skriv 'klar' när du är färdig): ");
+            string input = Console.ReadLine()?.Trim().ToLower() ?? "";
 
-            Ingredient chosenIngredient = shop.BuyIngredient(input);
-            if (chosenIngredient != null && player.CanAfford(chosenIngredient.Price))
+            if (input == "klar") break;
+
+            try
             {
-                player.AddIngredient(chosenIngredient);
-                Console.WriteLine($"Du har lagt till {chosenIngredient.Name} i ditt inventory.");
+                Ingredient chosenIngredient = Shop.BuyIngredient(input);
+                if (chosenIngredient == null)
+                {
+                    Console.WriteLine("Ingen sådan ingrediens finns.");
+                    continue;
+                }
+
+                if (Player.CanAfford(chosenIngredient.Price))
+                {
+                    Player.AddIngredient(chosenIngredient);
+                    Console.WriteLine($"Du har lagt till {chosenIngredient.Name}.");
+                }
+                else
+                {
+                    Console.WriteLine("Du har inte råd.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("Ogiltigt val eller du har inte tillräckligt med pengar.");
+                Console.WriteLine($"Fel: {ex.Message}");
             }
-            Console.ReadLine();
         }
 
-        // Skapar en rätt och (försöker) bedöma den!
-        Dish dish = new Dish { Ingredients = player.Inventory };
-        int score = jury.EvaluateDish(dish);
-
-        Console.WriteLine($"Din rätt fick {score} poäng av juryn!");
+        // Jury som Bedömer rätten
+        Dish dish = new Dish { Ingredients = Player.Inventory };
+        int score = Jury.EvaluateDish(dish);
+        Console.WriteLine($"Din rätt fick {score} poäng!\n");
         Console.ReadLine();
     }
 }
 
+// Subklasser av "Ingredient"
+class Vegetable : Ingredient
+{
+    public Vegetable(string name, decimal price, List<string> tastes) : base(name, price, tastes) { }
+}
+
+class Spice : Ingredient
+{
+    public Spice(string name, decimal price, List<string> tastes) : base(name, price, tastes) { }
+}
+
 class Ingredient
 {
-    public string Name { get; set; }
-    public decimal Price { get; set; }
-    public List<string> TasteProfile { get; set; }
+    public string Name { get; }
+    public decimal Price { get; }
+    public List<string> TasteProfile { get; }
 
     public Ingredient(string name, decimal price, List<string> tasteProfile)
     {
@@ -55,9 +112,42 @@ class Ingredient
         TasteProfile = tasteProfile;
     }
 
-    public string GetDescription()
+    public virtual string GetDescription() // Virtual för framtida override (gör imorgon osv)
     {
         return $"{Name} ({Price} kr) - Smaker: {string.Join(", ", TasteProfile)}";
+    }
+}
+
+class Shop //vad man ser i console
+{
+    private Dictionary<string, Ingredient> Ingredients { get; } = new Dictionary<string, Ingredient>();
+
+    public Shop()
+    {
+        // Lägg till ingredienser med Dictionary
+        AddIngredient(new Vegetable("Tomat", 20, new List<string> { "söt", "sur" }));
+        AddIngredient(new Spice("Salt", 10, new List<string> { "salt" }));
+        AddIngredient(new Vegetable("Lök", 25, new List<string> { "bitter", "söt" }));
+    }
+
+    private void AddIngredient(Ingredient ingredient)
+    {
+        Ingredients[ingredient.Name.ToLower()] = ingredient;
+    }
+
+    public void DisplayIngredients()
+    {
+        Console.WriteLine("\nButiken har:");
+        foreach (var ingredient in Ingredients.Values)
+        {
+            Console.WriteLine(ingredient.GetDescription());
+        }
+    }
+
+    public Ingredient BuyIngredient(string name)
+    {
+        Ingredients.TryGetValue(name.ToLower(), out Ingredient ingredient);
+        return ingredient;
     }
 }
 
@@ -83,33 +173,6 @@ class Player
     }
 }
 
-class Shop
-{
-    public List<Ingredient> AvailableIngredients { get; set; } = new List<Ingredient>();
-
-    public Shop()
-    {
-        // Lägg till några grundläggande ingredienser
-        AvailableIngredients.Add(new Ingredient("Tomat", 20, new List<string> { "söt", "sur" }));
-        AvailableIngredients.Add(new Ingredient("Salt", 10, new List<string> { "salt" }));
-        AvailableIngredients.Add(new Ingredient("Peppar", 15, new List<string> { "bitter" }));
-    }
-
-    public void DisplayIngredients()
-    {
-        Console.WriteLine("Tillgängliga ingredienser:");
-        foreach (var ingredient in AvailableIngredients)
-        {
-            Console.WriteLine(ingredient.GetDescription());
-        }
-    }
-
-    public Ingredient BuyIngredient(string name)
-    {
-        return AvailableIngredients.Find(i => i.Name.ToLower() == name.ToLower());
-    }
-}
-
 class Dish
 {
     public List<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
@@ -129,9 +192,16 @@ class Jury
 {
     public List<string> PreferredTastes { get; set; }
 
-    public Jury(List<string> preferredTastes)
+    public Jury(int level)
     {
-        PreferredTastes = preferredTastes;
+        // Sätt jurypreferenser baserat på nivå
+        PreferredTastes = level switch
+        {
+            1 => new List<string> { "söt", "salt" },
+            2 => new List<string> { "bitter", "sur" },
+            3 => new List<string> { "söt", "bitter", "salt" },
+            _ => new List<string> { "söt" }
+        };
     }
 
     public int EvaluateDish(Dish dish)

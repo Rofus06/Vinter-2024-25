@@ -13,3 +13,6 @@ c:\Users\filip.scherlund\Documents\Vinter-2024-25\Vinter-2024-25\obj\Debug\net8.
 c:\Users\filip.scherlund\Documents\Vinter-2024-25\Vinter-2024-25\obj\Debug\net8.0\Vinter-2024-25.pdb
 c:\Users\filip.scherlund\Documents\Vinter-2024-25\Vinter-2024-25\obj\Debug\net8.0\Vinter-2024-25.genruntimeconfig.cache
 c:\Users\filip.scherlund\Documents\Vinter-2024-25\Vinter-2024-25\obj\Debug\net8.0\ref\Vinter-2024-25.dll
+c:\Users\filip.scherlund\Documents\Vinter-2024-25\Vinter-2024-25\bin\Debug\net8.0\Newtonsoft.Json.dll
+c:\Users\filip.scherlund\Documents\Vinter-2024-25\Vinter-2024-25\obj\Debug\net8.0\Vinter-2024-25.csproj.AssemblyReference.cache
+c:\Users\filip.scherlund\Documents\Vinter-2024-25\Vinter-2024-25\obj\Debug\net8.0\Vinter-2.96B31795.Up2Date

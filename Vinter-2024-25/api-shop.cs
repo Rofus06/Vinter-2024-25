@@ -6,7 +6,7 @@ using Newtonsoft.Json; //install in nuget Newtonsoft.Json
 
 class ApiShop //fick hjälp av att sätta up api ifrån den här vid: https://www.youtube.com/watch?v=Flap5M630vk
 {
-    private static readonly string apiUrl = "https://67a9c2866e9548e44fc4bb32.mockapi.io/api/v1/FoodList";
+    private static readonly string apiUrl = "https://67a9c2866e9548e44fc4bb32.mockapi.io/api/v1/FoodList"; //https://mockapi.io/projects/67a9c2866e9548e44fc4bb33#
     private List<Ingredient> ingredients = new List<Ingredient>();
 
     public async Task LoadIngredientsAsync()
@@ -18,12 +18,12 @@ class ApiShop //fick hjälp av att sätta up api ifrån den här vid: https://ww
                 string response = await client.GetStringAsync(apiUrl);
                 List<ApiIngredient> apiIngredients = JsonConvert.DeserializeObject<List<ApiIngredient>>(response); //hjälp: https://stackoverflow.com/questions/56926237/how-to-deserialize-a-json-response-to-an-object-list
 
-                ingredients.Clear();
+                ingredients.Clear(); //clear om något är fel med api sakerna
                 foreach (var apiIngredient in apiIngredients) //hämta api ingredients
                 {
                     ingredients.Add(new Ingredient(apiIngredient.name, Convert.ToDecimal(apiIngredient.price), //omvandlat från string till decimal t.ex "10" till 10
                         new List<string>(apiIngredient.tastes.Split(',')))); //hämtar smaker och splitrar dom, t.ex "saltig,syrlig" till en array ["saltig", "syrlig"]
-                }
+                } 
 
                 Console.WriteLine("Ingredienser hämtade från API!");
 
@@ -55,13 +55,13 @@ class ApiShop //fick hjälp av att sätta up api ifrån den här vid: https://ww
 
     public Ingredient BuyIngredient(string name)
     {
-        return ingredients.Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase)); //jag använde chatgpt (för jag satt fast, visste ej hur jag skulle göra)
+        return ingredients.Find(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase)); //jag använde chatgpt (för jag satt fast, visste ej hur jag skulle göra det här)
     }
 }
 
 class ApiIngredient 
 {
-    public string id { get; set; } //vad som ska vissas först
+    public string id { get; set; } //vad som ska vissas först (ngl behöver inte äns för jag använde inte den här)
     public string name { get; set; } //namnet på Ingredientsen
     public string price { get; set; } //pricet på Ingredientsen
     public string tastes { get; set; } //smaken på Ingredientsen

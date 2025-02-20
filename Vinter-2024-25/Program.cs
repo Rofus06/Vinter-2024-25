@@ -23,13 +23,14 @@ class Game
         Console.WriteLine("Välkommen till matlagningsspelet!");
         await Shop.LoadIngredientsAsync(); // Laddar Ingredienser från API
 
-        while (CurrentLevel <= 3) //main loopen i lvl
+        while (CurrentLevel <= 3) //main loopen i levels
         {
             InitializeLevel(); //sätter up nivåerna 
             await PlayLevelAsync(); //spelaren väljer rätter
             CurrentLevel++; //lägger till 1 nivå ifrån vad som fanns (tills man kommer till 3)
         }
         Console.WriteLine("Spelet är slut! Tack för att du spelade!"); //när man är på nivå 3 och man är klar kommer det här up
+        Console.ReadLine();
     }
 
     private void InitializeLevel()
@@ -89,12 +90,12 @@ class Player
 
     public Player(decimal budget)
     {
-        Budget = budget;
+        Budget = budget; //nyligen skapade spelaren får rätt budget
     }
 
     public void AddIngredient(Ingredient ingredient)
     {
-        Inventory.Add(ingredient);
+        Inventory.Add(ingredient); 
         Budget -= ingredient.Price;
     }
 
@@ -150,8 +151,8 @@ class Jury
         PreferredTastes = level switch
         {
             1 => new List<string> { "söt", "salt" },
-            2 => new List<string> { "bitter", "sur" },
-            3 => new List<string> { "söt", "bitter", "salt" },
+            2 => new List<string> { "bitter", "sur", "rökig" },
+            3 => new List<string> { "söt", "bitter", "salt", "saftig" },
             _ => new List<string> { "söt" }
         };
     }

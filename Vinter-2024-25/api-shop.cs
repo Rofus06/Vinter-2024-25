@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json; //install in nuget Newtonsoft.Json
 
+
 class ApiShop //fick hjälp av att sätta up api ifrån den här vid: https://www.youtube.com/watch?v=Flap5M630vk
 {
     private static readonly string apiUrl = "https://67a9c2866e9548e44fc4bb32.mockapi.io/api/v1/FoodList"; //https://mockapi.io/projects/67a9c2866e9548e44fc4bb33#

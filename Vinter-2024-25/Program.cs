@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+// ---------- Main Program ----------
 class Program
 {
     static async Task Main(string[] args)
@@ -10,6 +11,37 @@ class Program
         await game.StartGameAsync();
     }
 }
+
+// ---------- BASKLASSER (för Arv) ---------- 
+
+class Person
+{
+    public string Name { get; set; }
+
+    public Person(string name)
+    {
+        Name = name;
+    }
+}
+
+class Product
+{
+    public string Name { get; }
+    public decimal Price { get; }
+
+    public Product(string name, decimal price)
+    {
+        Name = name;
+        Price = price;
+    }
+
+    public virtual string GetDescription()
+    {
+        return $"{Name} - {Price} kr";
+    }
+}
+
+// ---------- SPELKLASSER ----------
 
 class Game
 {
@@ -36,7 +68,7 @@ class Game
     private void InitializeLevel()
     {
         decimal budget = CurrentLevel switch { 1 => 100, 2 => 150, 3 => 200, _ => 100 }; //_ vissar att om det är något fel och det går över går den till defult = 100
-        Player = new Player(budget);
+        Player = new Player("Spelaren", budget);
         Jury = new Jury(CurrentLevel);
 
         Console.WriteLine($"\n=== NIVÅ {CurrentLevel} ===");
@@ -80,52 +112,44 @@ class Game
     }
 }
 
-// ---------- NYA KLASSER ----------
-
-// Klass för spelaren
-class Player
+// ---------- SPELARE ----------
+class Player : Person
 {
-    public decimal Budget { get; set; }
-    public List<Ingredient> Inventory { get; set; } = new List<Ingredient>();
+    public decimal Budget { get; private set; }
+    public List<Ingredient> Inventory { get; private set; } = new List<Ingredient>();
 
-    public Player(decimal budget)
+    public Player(string name, decimal budget) : base(name)
     {
-        Budget = budget; //nyligen skapade spelaren får rätt budget
+        Budget = budget;
     }
 
     public void AddIngredient(Ingredient ingredient)
     {
-        Inventory.Add(ingredient); 
+        Inventory.Add(ingredient);
         Budget -= ingredient.Price;
     }
 
-    public bool CanAfford(decimal price)
-    {
-        return Budget >= price;
-    }
+    public bool CanAfford(decimal price) => Budget >= price;
 }
 
-// Klass för ingredienser
-class Ingredient
+// ---------- INGREDIENSER ----------
+class Ingredient : Product
 {
-    public string Name { get; } //namnet på ingrediensen
-    public decimal Price { get; } //priset på ingrediensen
-    public List<string> TasteProfile { get; } //Taste...
+    public List<string> TasteProfile { get; }
 
     public Ingredient(string name, decimal price, List<string> tasteProfile)
+        : base(name, price)
     {
-        Name = name;
-        Price = price;
         TasteProfile = tasteProfile;
     }
 
-    public string GetDescription()
+    public override string GetDescription()
     {
         return $"{Name} ({Price} kr) - Smaker: {string.Join(", ", TasteProfile)}";
     }
 }
 
-// Klass för att representera en rätt
+// ---------- RÄTT ----------
 class Dish
 {
     public List<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
@@ -141,12 +165,12 @@ class Dish
     }
 }
 
-// Klass för Juryn
-class Jury
+// ---------- JURY ----------
+class Jury : Person
 {
     public List<string> PreferredTastes { get; set; }
 
-    public Jury(int level)
+    public Jury(int level) : base("Juryn")
     {
         PreferredTastes = level switch
         {
@@ -157,7 +181,7 @@ class Jury
         };
     }
 
-    public int EvaluateDish(Dish dish)
+    public virtual int EvaluateDish(Dish dish)
     {
         int score = 0;
         foreach (var taste in dish.GetTasteProfile())
